@@ -150,7 +150,7 @@ elif (Cabin_type == 'business'):
 else:
     segmentsCabinCodeNum = Cabin_type
 
-#st.button('Fare Prediction')
+
 
 # creating a button for prediction
 if st.button('Fare Prediction'):
