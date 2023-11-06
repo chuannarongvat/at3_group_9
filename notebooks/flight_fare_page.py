@@ -4,10 +4,8 @@ import pandas as pd
 from joblib import load
 from datetime import datetime
 
-
-
 #loading the saved models
-loaded_model = load('../../models/model_gb_boost_srusti.joblib')
+#loaded_model = load('../models/model_gb_boost_srusti.joblib')
 
 # creating a function for prediction
 def flight_prediction(input_data):
@@ -15,14 +13,7 @@ def flight_prediction(input_data):
     new_input_data = []
     for element in input_data:
             new_input_data.append(element)
-
-    # changing the input_data to numpy array
-    input_data_as_numpy_array = np.asarray(new_input_data)
-
-    # reshape the array as we are predicting for one instance
-    input_data_reshaped = input_data_as_numpy_array.reshape(1, -1)
-
-    prediction = loaded_model.predict(input_data_reshaped)
+    prediction = loaded_model.predict(new_input_data)
     return 'The estimated flight fare is {:,} rupees.'.format(int(prediction))
 
 # giving a title
@@ -78,7 +69,7 @@ elif (starting_Airport == 'SFO'):
     startingAirportNum=6
 else:
     startingAirport = startingAirport
-
+# Destination airport details
 destination_Airport = st.selectbox('Destination_Airport:',
                                    ['ATL',
                                 'BOS',
@@ -132,7 +123,11 @@ elif (destination_Airport == 'SFO'):
 else:
     destinationAirportNum = destinationAirport
 
-flightDate=st.date_input('Departure_date:')
+# convert the date to week day
+departure_date=st.date_input('Departure_date:')
+if departure_date:
+    #flightDate= datetime.timestamp(datetime.strptime(str(flightDate), '%Y-%m-%d'))
+    week_day=datetime.strptime(str(departure_date), '%Y-%m-%d').weekday()
 
 departure_time = st.time_input("Departure time")
 
@@ -143,18 +138,15 @@ if (Cabin_type == 'coach'):
 elif (Cabin_type == 'first'):
     Cabin_type=1
 elif (Cabin_type == 'premium coach'):
-    segmentsCabinCodeNum='3
+    segmentsCabinCodeNum=3
 elif (Cabin_type == 'business'):
     segmentsCabinCodeNum=2
-
 else:
     segmentsCabinCodeNum = Cabin_type
 
-
-
+Fare=0
 # creating a button for prediction
-if st.button('Fare Prediction'):
-    Fare = flight_prediction(['startingAirportNum','destinationAirportNum','flightDate','departure_time','segmentsCabinCodeNum'])
-
-#st.success(price)
+if st.button('validate'):
+    Fare = flight_prediction(['startingAirportNum','destinationAirportNum','week_day','departure_time','segmentsCabinCodeNum'])
+st.success(Fare)
 
