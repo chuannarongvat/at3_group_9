@@ -125,12 +125,30 @@ else:
 
 # convert the date to week day
 departure_date=st.date_input('Departure_date:')
-if departure_date:
-    #flightDate= datetime.timestamp(datetime.strptime(str(flightDate), '%Y-%m-%d'))
+if departure_date :
+    flightDate= datetime.timestamp(datetime.strptime(str(departure_date), '%Y-%m-%d'))
     week_day=datetime.strptime(str(departure_date), '%Y-%m-%d').weekday()
 
 departure_time = st.time_input("Departure time")
+if departure_time:
+    # Define custom time ranges and corresponding labels
+    time_ranges = [(0, 6), (6, 12), (12, 18), (18, 24)]
+    labels = ['Early Morning', 'Morning', 'Afternoon', 'Evening']
 
+    # Extract the hour from the timestamp column
+    hour = pd.to_datetime(departure_time).dt.hour
+
+# Create a function to assign time range labels based on the hour
+def assign_time_range(hour):
+    for i, (start, end) in enumerate(time_ranges):
+        if start <= hour < end:
+            return labels[i]
+     return 'Unknown'
+
+# Apply the function to create the 'time_range' column
+time_range= assign_time_range(hour)
+
+# Cabin type
 Cabin_type = st.selectbox('Cabin type:', ['coach', 'first', 'premium coach', 'business'])
 
 if (Cabin_type == 'coach'):
@@ -147,6 +165,5 @@ else:
 Fare=0
 # creating a button for prediction
 if st.button('validate'):
-    Fare = flight_prediction(['startingAirportNum','destinationAirportNum','week_day','departure_time','segmentsCabinCodeNum'])
+    Fare = flight_prediction(['startingAirportNum','destinationAirportNum','flightDate','week_day','departure_time','segmentsCabinCodeNum'])
 st.success(Fare)
-
