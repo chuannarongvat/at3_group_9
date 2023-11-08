@@ -214,3 +214,112 @@ def plot_day_of_week_fare(df, start_airport, dest_airport_col, fare_col, bins=20
 
     g.tight_layout()
     plt.show()
+    
+def plot_day_of_week_fare_isnonstop(day_of_week_fare):
+    import seaborn as sns
+    import matplotlib.pyplot as plt
+
+    ax = sns.barplot(x='day_of_week', y='totalFare', data=day_of_week_fare, hue='isNonStop', palette="ch:.25")
+
+    ax.set(xlabel="Day of the Week", ylabel="Mean Total Fare ($)", title='Day of the Week Mean Fare')
+
+    plt.xticks(rotation=45)
+    plt.legend(title='isNonStop', loc='upper left', bbox_to_anchor=(1, 1))
+    
+    plt.tight_layout()
+    
+    plt.show()
+    
+def plot_day_of_week_count(df, start_airport, dest_airport_col, hue_col, bins=20):
+    import seaborn as sns
+    import matplotlib.pyplot as plt
+    
+    df_filtered = df[df['startingAirport'] == start_airport]
+
+    g = sns.FacetGrid(df_filtered, col=dest_airport_col, col_wrap=5, sharex=False, sharey=False)
+
+    def create_countplot(data, **kwargs):
+        sns.countplot(data=data, x='day_of_week', hue=hue_col, palette='ch:.25', ax=plt.gca())
+
+    g.map_dataframe(create_countplot, data=df_filtered)
+
+    g.set_titles(col_template="{col_name} Airport")
+    g.set_axis_labels('Day of the Week', 'Count')
+
+    g.fig.suptitle(f'Count of {hue_col} from {start_airport} Airport', y=1.02)
+
+    for ax in g.axes.flat:
+        for label in ax.get_xticklabels():
+            label.set_rotation(45)
+
+    g.tight_layout()
+
+    plt.legend(title=hue_col, bbox_to_anchor=(1.05, 1), loc='upper left')
+
+    plt.show()    
+    
+def date_to_day_of_week(df, date_col):
+    try:
+        df[date_col] = pd.to_datetime(df[date_col])
+        
+        df['day_of_week'] = df[date_col].dt.strftime('%A')
+        
+        day_order = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+        df['day_of_week'] = pd.Categorical(df['day_of_week'], categories=day_order, ordered=True)
+    except ValueError:
+        print("Invalid Date Format")
+    
+    return df
+
+def date_to_numeric_day_of_week(df, date_col):
+    try:
+        df[date_col] = pd.to_datetime(df[date_col])
+        df['day_of_week'] = df[date_col].dt.dayofweek
+    except ValueError:
+        print("Invalid Date Format")
+    
+    return df
+
+def convert_to_km(df, distance):
+    df[distance] = df[distance].astype(int) * 1.60934
+    
+    return df
+
+def extract_time(df, column_name):
+    try:
+        df[column_name] = pd.to_datetime(df[column_name], utc=True)
+        
+        df['departureTime_fraction'] = df[column_name].dt.hour / 24 + df[column_name].dt.minute / (24 * 60)
+        df['departureTime'] = df[column_name].dt.strftime('%H:%M')
+    except Exception as e:
+        print("Error:", e)
+    
+    return df
+
+def create_time_bins(df, column_name, bin_size_minutes=60, bin_labels=None):
+    df['departureTime_convert'] = pd.to_datetime(df[column_name], format='%H:%M')
+    
+    df['hour'] = df['departureTime_convert'].dt.hour
+    df['minute'] = df['departureTime_convert'].dt.minute
+    
+    df['total_minutes'] = df['hour'] * 60 + df['minute']
+    
+    bin_edges = list(range(0, 1441, bin_size_minutes))
+    
+    if bin_labels:
+        df['{}_bins'.format('departureTime_convert')] = pd.cut(df['total_minutes'], bins=bin_edges, labels=bin_labels)
+    else:
+        df['{}_bins'.format('departureTime_convert')] = pd.cut(df['total_minutes'], bins=bin_edges)
+    
+    df.drop(['departureTime_convert', 'hour', 'minute', 'total_minutes'], axis=1, inplace=True)
+    
+    return df
+
+def transform_segments_cabin_code(segment):
+    segments = segment.split('||')
+    unique_segments = list(set(segments))
+    
+    if len(unique_segments) == 1:
+        return unique_segments[0]
+    else:
+        return 'mix'
