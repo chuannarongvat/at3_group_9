@@ -1,3 +1,22 @@
+import numpy as np
+class NullRegressor:
+    def __init__(self):
+        self.y = None
+        self.pred_value = None
+        self.preds = None
+
+    def fit(self, y):
+        self.y = y
+        self.pred_value = y.mean()
+
+    def predict(self, y):
+        self.preds = np.full((len(y), 1), self.pred_value)
+        return self.preds
+
+    def fit_predict(self, y):
+        self.fit(y)
+        return self.predict(self.y)
+    
 def print_regressor_scores(y_preds, y_actuals, set_name=None):
     from sklearn.metrics import mean_squared_error as mse
     from sklearn.metrics import mean_absolute_error as mae
