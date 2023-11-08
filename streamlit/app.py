@@ -1,6 +1,7 @@
 import streamlit as st
 from joblib import load
 import pandas as pd
+import datetime
 
 model = load('models/lr_model.joblib')
 table = pd.read_csv('table/table.csv')
@@ -84,10 +85,43 @@ def main():
         Get started by entering your trip information below.
     """)
     
-    airport_options = ['ATL', 'BOS', 'CLT', 'DEN', 'DFW', 'DTW', 'EWR', 'IAD', 'JFK', 'LAX', 'LGA', 'MIA', 'OAK', 'ORD', 'PHL', 'SFO']
+    # airport_options = ['ATL', 'BOS', 'CLT', 'DEN', 'DFW', 'DTW', 'EWR', 'IAD', 'JFK', 'LAX', 'LGA', 'MIA', 'OAK', 'ORD', 'PHL', 'SFO']
+    # starting_airport = st.selectbox("Origin Airport:", airport_options, index=0)
+    # destination_airport = st.selectbox("Destination Airport:", airport_options, index=1)
+    
+    airport_names = {
+    'ATL': 'Atlanta Hartsfield-Jackson, GA (ATL)',
+    'BOS': 'Boston Logan International, MA (BOS)',
+    'CLT': 'Charlotte Douglas, NC (CLT)',
+    'DEN': 'Denver International, CO (DEN)',
+    'DFW': 'Dallas Fort Worth International, TX (DFW)',
+    'DTW': 'Detroit Wayne County, MI (DTW)',
+    'EWR': 'New York Newark, NJ (EWR)',
+    'IAD': 'Washington Dulles, VA (IAD)',
+    'JFK': 'New York John F. Kennedy, NY (JFK)',
+    'LAX': 'Los Angeles International, CA (LAX)',
+    'LGA': 'New York LaGuardia, NY (LGA)',
+    'MIA': 'Miami International, FL (MIA)',
+    'OAK': 'Oakland Metropolitan Oak, CA (OAK)',
+    'ORD': "Chicago O'Hare International, IL (ORD)",
+    'PHL': 'Philadelphia International, PA (PHL)',
+    'SFO': 'San Francisco International, CA (SFO)'
+}
+    
+    starting_airport = st.selectbox(
+        "Origin Airport:",
+        options=list(airport_names.keys()),
+        format_func=lambda x: airport_names[x],
+        index=0
+)
 
-    starting_airport = st.selectbox("Origin Airport:", airport_options, index=0)
-    destination_airport = st.selectbox("Destination Airport:", airport_options, index=1)
+    destination_airport = st.selectbox(
+        "Destination Airport:",
+        options=list(airport_names.keys()),
+        format_func=lambda x: airport_names[x],
+        index=1
+)
+    
 
     departure_date = st.date_input("Departure Date:")
     departure_time = st.time_input("Departure Time:")
@@ -111,9 +145,13 @@ def main():
             prediction = model.predict(processed_input)
             
             predicted_value = prediction[0][0] if prediction.ndim > 1 else prediction[0]
+            
+            formatted_date = departure_date.strftime("%A, %B %d, %Y") if isinstance(departure_date, datetime.date) else str(departure_date)
+            formatted_time = departure_time.strftime("%I:%M %p") if isinstance(departure_time, datetime.time) else str(departure_time) 
+            
             st.success(
                 f"🎉 Your estimated fligt fare for a {cabin_type} class seat from {starting_airport} to {destination_airport} "
-                f"on {departure_date} at {departure_time} is approximately: ${predicted_value:,.2f}!"
+                f"on {formatted_date} at {formatted_time} is: **${predicted_value:,.2f}**!"
             )
 
 if __name__ == '__main__':
