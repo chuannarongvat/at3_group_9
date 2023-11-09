@@ -8,7 +8,15 @@ Welcome to our project as part of the "Advanced Machine Learning Application - S
 ## Objectives
 The objective of this project was to employ a Machine Learning to develop a predictive model of flight fare. In addition, this tool is aimed at addressing the needs of various stakeholders within the travel and tourism industry in the USA, including travelers seeking budgeting assistance and businesses requiring strategic pricing analysis.
 
-A short description of the project.
+## Getting Started
+1. Clone the repository to your local machine
+```shell
+git clone git@github.com:chuannarongvat/at3_group_9_streamlit.git
+```
+2. Installed the required dependencies using Poetry:
+```shell
+poetry install
+```
 
 Project Organization
 ------------
