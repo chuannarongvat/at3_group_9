@@ -74,20 +74,38 @@ def preprocess_input(starting_airport, destination_airport, departure_date, depa
     # flgiht Date UnixTime
     # departure_month
 
+invalid_airport_pairs = {
+    ('EWR', 'JFK'),
+    ('JFK', 'EWR'),
+    ('JFK', 'LGA'),
+    ('LGA', 'JFK'),
+    ('LGA', 'EWR')
+}
+
+def is_valid_route(starting_airport, destination_airport, invalid_pairs):
+    return (starting_airport, destination_airport) not in invalid_pairs
+
 def main():
-    st.title("USA Flight Fare Predictor")
+    st.title("🇺🇸USA Flight Fare Predictor")
+    
+    with st.expander("Brought to you by Group 9"):
+            st.text("Team Members (Student IDs):")
+            st.markdown("""
+        - Marisara Satrulee (24710081)
+        - Narongvat Chingpayakmon (14229898)
+        - Srusti Pattnayak (14348421)
+        - Sudarat Sukjaroen (24667255)
+        """)
+            
     st.markdown("""
-        Welcome to the USA Flight Fare Predictor! ✈️
+        **Welcome to the USA Flight Fare Predictor! ✈️**
         
         Planning your travel within the United States? Use this app to estimate your airfare costs. 
         Simply input your trip details, and we'll provide you with a fare estimate to help you budget your journey.
 
         Get started by entering your trip information below.
+        
     """)
-    
-    # airport_options = ['ATL', 'BOS', 'CLT', 'DEN', 'DFW', 'DTW', 'EWR', 'IAD', 'JFK', 'LAX', 'LGA', 'MIA', 'OAK', 'ORD', 'PHL', 'SFO']
-    # starting_airport = st.selectbox("Origin Airport:", airport_options, index=0)
-    # destination_airport = st.selectbox("Destination Airport:", airport_options, index=1)
     
     airport_names = {
     'ATL': 'Atlanta Hartsfield-Jackson, GA (ATL)',
@@ -108,30 +126,34 @@ def main():
     'SFO': 'San Francisco International, CA (SFO)'
 }
     
+    st.markdown("<br>", unsafe_allow_html=True)
+
     starting_airport = st.selectbox(
-        "Origin Airport:",
+        "**Origin Airport:**",
         options=list(airport_names.keys()),
         format_func=lambda x: airport_names[x],
         index=0
 )
 
     destination_airport = st.selectbox(
-        "Destination Airport:",
+        "**Destination Airport:**",
         options=list(airport_names.keys()),
         format_func=lambda x: airport_names[x],
         index=1
 )
     
+    departure_date = st.date_input("**Departure Date:**")
+    departure_time = st.time_input("**Departure Time:**")
+    cabin_type = st.selectbox("**Cabin Type:**", ['Coach', 'Premium Coach', 'Business', 'First', 'Mix'])
 
-    departure_date = st.date_input("Departure Date:")
-    departure_time = st.time_input("Departure Time:")
-    cabin_type = st.selectbox("Cabin Type:", ['Coach', 'Premium Coach', 'Business', 'First', 'Mix'])
-
-    predict_button = st.button("Predict")
+    predict_button = st.button("**Predict**")
 
     if predict_button:
         if starting_airport == destination_airport:
-            st.error("Origin and Destination airports cannot be the same. Please select different airports.")
+            st.error("❌Origin and Destination airports cannot be the same. Please select different routes.")
+        
+        elif not is_valid_route(starting_airport, destination_airport, invalid_airport_pairs):
+            st.error(f"❌ There is no flight from {starting_airport} to {destination_airport} airport. Please select different routes.")
             
         else:
             processed_input = preprocess_input(
