@@ -3,7 +3,7 @@ from joblib import load
 import pandas as pd
 import datetime
 
-model = load('models/lr_model.joblib')
+model = load('models/dt_regressor.joblib')
 table = pd.read_csv('table/table.csv')
 
 def preprocess_input(starting_airport, destination_airport, departure_date, departure_time, cabin_type):
