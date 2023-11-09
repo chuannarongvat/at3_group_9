@@ -5,6 +5,10 @@ at3_group_9
 
 Welcome to our project as part of the "Advanced Machine Learning Application - Spring 2023" course. This initiative revolves around Assignment 3, which emphasizes "Data Product with Machine Learning".
 
+**[Link to Streamlit Repository](<https://github.com/chuannarongvat/at3_group_9_streamlit>)**
+
+**[Launch the Streamlit Application](<https://at3group9app-j9uwhfpnn3xj8jxffdkedh.streamlit.app/>)**
+
 ## Objectives
 The objective of this project was to employ a Machine Learning to develop a predictive model of flight fare. In addition, this tool is aimed at addressing the needs of various stakeholders within the travel and tourism industry in the USA, including travelers seeking budgeting assistance and businesses requiring strategic pricing analysis.
 
