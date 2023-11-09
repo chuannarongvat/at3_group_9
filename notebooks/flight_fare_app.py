@@ -5,7 +5,7 @@ from joblib import load
 from datetime import datetime
 
 #loading the saved models
-#loaded_model = load('../models/model_gb_boost_srusti.joblib')
+#loaded_model = load('../models/model_gb_boost.joblib')
 
 # creating a function for prediction
 def flight_prediction(input_data):
