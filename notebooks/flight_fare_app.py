@@ -68,7 +68,7 @@ elif (starting_Airport == 'PHL'):
 elif (starting_Airport == 'SFO'):
     startingAirportNum=6
 else:
-    startingAirport = startingAirport
+    startingAirportNum = startingAirport
 # Destination airport details
 destination_Airport = st.selectbox('Destination_Airport:',
                                    ['ATL',
@@ -123,11 +123,25 @@ elif (destination_Airport == 'SFO'):
 else:
     destinationAirportNum = destinationAirport
 
-# convert the date to week day
+# Extracting model features from departure date
 departure_date=st.date_input('Departure_date:')
 if departure_date :
-    flightDate= datetime.timestamp(datetime.strptime(str(departure_date), '%Y-%m-%d'))
-    week_day=datetime.strptime(str(departure_date), '%Y-%m-%d').weekday()
+    flightDateNum= datetime.timestamp(datetime.strptime(str(departure_date), '%Y-%m-%d'))
+    departure_month=datetime.strptime(str(departure_date), '%Y-%m-%d').month
+    #week_day=datetime.strptime(str(departure_date), '%Y-%m-%d').weekday()
+    day_of_week = pd.to_datetime(departure_date).strftime('%A')
+    day_to_number = {
+        'Monday': 1,
+        'Tuesday': 2,
+        'Wednesday': 3,
+        'Thursday': 4,
+        'Friday': 5,
+        'Saturday': 6,
+        'Sunday': 7
+    }
+    departure_day_of_week = day_to_number.get(day_of_week, None)
+
+
 
 departure_time = st.time_input("Departure time")
 if departure_time:
@@ -136,34 +150,35 @@ if departure_time:
     labels = ['Early Morning', 'Morning', 'Afternoon', 'Evening']
 
     # Extract the hour from the timestamp column
-    hour = pd.to_datetime(departure_time).dt.hour
+    hour = pd.to_datetime(str(departure_time)).hour
 
 # Create a function to assign time range labels based on the hour
 def assign_time_range(hour):
     for i, (start, end) in enumerate(time_ranges):
         if start <= hour < end:
             return labels[i]
-     return 'Unknown'
+    return 'Unknown'
 
 # Apply the function to create the 'time_range' column
 time_range= assign_time_range(hour)
 
 # Cabin type
+
 Cabin_type = st.selectbox('Cabin type:', ['coach', 'first', 'premium coach', 'business'])
 
 if (Cabin_type == 'coach'):
-    segmentsCabinCodeNum = 0
+    segmentsCabinCodeNum = 2
 elif (Cabin_type == 'first'):
-    Cabin_type=1
+    Cabin_type=3
 elif (Cabin_type == 'premium coach'):
-    segmentsCabinCodeNum=3
+    segmentsCabinCodeNum=4
 elif (Cabin_type == 'business'):
-    segmentsCabinCodeNum=2
+    segmentsCabinCodeNum=1
 else:
-    segmentsCabinCodeNum = Cabin_type
+    segmentsCabinCodeNum = 5
 
 Fare=0
 # creating a button for prediction
-if st.button('validate'):
-    Fare = flight_prediction(['startingAirportNum','destinationAirportNum','flightDate','week_day','departure_time','segmentsCabinCodeNum'])
+if st.button('validate with Srusti'):
+    st.write(['startingAirportNum','destinationAirportNum','flightDate','week_day','departure_time','segmentsCabinCodeNum'])
 st.success(Fare)
