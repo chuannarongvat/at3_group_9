@@ -1,6 +1,13 @@
 at3_group_9
 ==============================
 
+## Advanced Machine Learning Assignment 3: Group 9 Data Product with Machine Learning
+
+Welcome to our project as part of the "Advanced Machine Learning Application - Spring 2023" course. This initiative revolves around Assignment 3, which emphasizes "Data Product with Machine Learning".
+
+## Objectives
+The objective of this project was to employ a Machine Learning to develop a predictive model of flight fare. In addition, this tool is aimed at addressing the needs of various stakeholders within the travel and tourism industry in the USA, including travelers seeking budgeting assistance and businesses requiring strategic pricing analysis.
+
 A short description of the project.
 
 Project Organization
